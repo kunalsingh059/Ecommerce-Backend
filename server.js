@@ -12,18 +12,25 @@ const PORT = process.env.PORT || 3000;
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
-  .catch((error) => console.error('Mongo Error', error));
+  .catch((error) => console.error('MongoDB Connection Error:', error));
 
 // Middleware
 app.use(express.json()); // For parsing JSON bodies
 
 // CORS Configuration
 app.use(cors({
-  origin: "*",  
+  origin: '*',  // Your frontend origin
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  credentials: true,  // Include cookies or authorization headers
 }));
+
+
+// Debugging Middleware for Incoming Requests
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Body:`, req.body);
+  next();
+});
 
 // Routes
 app.use('/api/auth', authRoutes); // Handle authentication routes
