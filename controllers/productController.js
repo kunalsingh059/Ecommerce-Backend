@@ -4,10 +4,7 @@ const fs = require('fs');
 // Get all products (with optional category filter)
 exports.getAllProducts = async (req, res) => {
   try {
-    const { category } = req.query; // Get the category from query parameters
-    const filter = category ? { category: category.toLowerCase() } : {}; // Filter by category if provided
-
-    const products = await Product.find(filter); // Apply the filter to the query
+    const products = await Product.find(); // No filter, fetch all products
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch products', error: error.message });
@@ -27,27 +24,27 @@ exports.getProductById = async (req, res) => {
   }
 };
 
+
 // Add a new product
 exports.addProduct = async (req, res) => {
   try {
     const { name, price, category } = req.body;
 
-    // Validation
     if (!name || !price || !category) {
       return res.status(400).json({ message: 'Name, price, and category are required' });
     }
 
-    const image = req.file ? req.file.path : null;  // Multer stores the uploaded file and provides its path
+    const image = req.file ? req.file.path : null;
 
     const newProduct = new Product({
       name,
       description: req.body.description,
       price,
       discount: req.body.discount,
-      category: category.toLowerCase(),  // Convert category to lowercase for consistency
+      category,  // Category remains a string
       image,
       stock: req.body.stock,
-      isNewProduct: req.body.isNewProduct,
+      isNewProduct: req.body.isNewProduct
     });
 
     await newProduct.save();
@@ -56,6 +53,7 @@ exports.addProduct = async (req, res) => {
     res.status(500).json({ message: 'Failed to add product', error: error.message });
   }
 };
+
 
 // Update product
 exports.updateProduct = async (req, res) => {

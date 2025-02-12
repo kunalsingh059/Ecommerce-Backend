@@ -45,22 +45,23 @@ router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find user by email
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    // Compare password with stored hash
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ message: 'Login successful', token });
+    res.status(200).json({ message: 'Login successful', token });  // Always return a 200 status with a JSON response
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
