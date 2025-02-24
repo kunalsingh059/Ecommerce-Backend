@@ -3,23 +3,12 @@ const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,  // Remove extra spaces
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,  // Ensure consistent email storage
-    },
-    password: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
+    password: { type: String, required: true },
+    isAdmin: { type: Boolean, default: false },
   },
-  { timestamps: true } // Automatically add createdAt and updatedAt fields
+  { timestamps: true }
 );
 
 // Hash password before saving
@@ -31,15 +20,16 @@ userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (err) {
-    next(err); // Pass the error to the next middleware
+    next(err);
   }
 });
 
-// Method to compare passwords
+// Compare passwords
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return bcrypt.compare(enteredPassword, this.password);
 };
 
-const User = mongoose.model('User', userSchema);
+// ✅ Fix OverwriteModelError
+const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 module.exports = User;

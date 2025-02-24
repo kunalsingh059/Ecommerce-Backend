@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
+const adminRoutes = require('./routes/adminRoutes'); // ✅ Import Admin Routes
 
 dotenv.config(); // Load environment variables
 const app = express();
@@ -19,12 +20,11 @@ app.use(express.json()); // For parsing JSON bodies
 
 // CORS Configuration
 app.use(cors({
-  origin: '*',  // Your frontend origin
+  origin: ['http://localhost:3000'],  // ✅ Allow frontend only
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,  // Include cookies or authorization headers
+  credentials: true,  // Allow credentials (cookies, headers)
 }));
-
 
 // Debugging Middleware for Incoming Requests
 app.use((req, res, next) => {
@@ -33,8 +33,9 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use('/api/auth', authRoutes); // Handle authentication routes
-app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);       // Authentication Routes
+app.use('/api/products', productRoutes); // Product Routes
+app.use('/api/admin', adminRoutes);     // ✅ Admin Routes
 
 // Sample Route
 app.get('/', (req, res) => {
@@ -45,4 +46,4 @@ app.get('/', (req, res) => {
 app.options('*', cors());
 
 // Start Server
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -1,17 +1,17 @@
 const Product = require('../models/product');
 const fs = require('fs');
 
-// Get all products (with optional category filter)
+// Get all products (Anyone can access)
 exports.getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find(); // No filter, fetch all products
+    const products = await Product.find();
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch products', error: error.message });
   }
 };
 
-// Get a single product by ID
+// Get a single product by ID (Anyone can access)
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -24,12 +24,14 @@ exports.getProductById = async (req, res) => {
   }
 };
 
-
-// Add a new product
+// Add a new product (Admins only)
 exports.addProduct = async (req, res) => {
   try {
-    const { name, price, category } = req.body;
+    if (!req.user || !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
 
+    const { name, price, category } = req.body;
     if (!name || !price || !category) {
       return res.status(400).json({ message: 'Name, price, and category are required' });
     }
@@ -41,10 +43,10 @@ exports.addProduct = async (req, res) => {
       description: req.body.description,
       price,
       discount: req.body.discount,
-      category,  // Category remains a string
+      category,
       image,
       stock: req.body.stock,
-      isNewProduct: req.body.isNewProduct
+      isNewProduct: req.body.isNewProduct,
     });
 
     await newProduct.save();
@@ -54,12 +56,14 @@ exports.addProduct = async (req, res) => {
   }
 };
 
-
-// Update product
+// Update product (Admins only)
 exports.updateProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    if (!req.user || !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
 
+    const product = await Product.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -82,9 +86,13 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
-// Delete product
+// Delete product (Admins only)
 exports.deleteProduct = async (req, res) => {
   try {
+    if (!req.user || !req.user.isAdmin) {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
     const deletedProduct = await Product.findByIdAndDelete(req.params.id);
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
@@ -94,3 +102,4 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ message: 'Failed to delete product', error: error.message });
   }
 };
+
