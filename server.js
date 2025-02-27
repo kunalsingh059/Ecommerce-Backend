@@ -17,6 +17,8 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Middleware
 app.use(express.json()); // For parsing JSON bodies
+app.use('/uploads', express.static('uploads'));
+
 
 // CORS Configuration
 app.use(cors({
