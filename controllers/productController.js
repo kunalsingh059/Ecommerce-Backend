@@ -1,19 +1,11 @@
 const Product = require('../models/product');
 const fs = require('fs');
-const path = require('path');
 
 // Get all products (Anyone can access)
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find();
-
-    // Fix image URL before sending response
-    const updatedProducts = products.map(product => ({
-      ...product._doc, // Spread all product fields
-      image: product.image ? `http://localhost:5000/${product.image.replace(/\\/g, '/')}` : null
-    }));
-
-    res.status(200).json(updatedProducts);
+    res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch products', error: error.message });
   }
@@ -26,10 +18,6 @@ exports.getProductById = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
-    // Fix image URL before sending response
-    product.image = product.image ? `http://localhost:5000/${product.image.replace(/\\/g, '/')}` : null;
-
     res.status(200).json(product);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch product', error: error.message });
@@ -38,6 +26,8 @@ exports.getProductById = async (req, res) => {
 
 // Add a new product (Admins only)
 exports.addProduct = async (req, res) => {
+  console.log(req.body); // Check if data is received
+  console.log(req.file); // Check if file is uploaded
   try {
     if (!req.user || !req.user.isAdmin) {
       return res.status(403).json({ message: 'Access denied. Admins only.' });
@@ -48,8 +38,7 @@ exports.addProduct = async (req, res) => {
       return res.status(400).json({ message: 'Name, price, and category are required' });
     }
 
-    // Fix image path
-    const image = req.file ? req.file.path.replace(/\\/g, '/') : null;
+    const image = req.file ? req.file.path : null;
 
     const newProduct = new Product({
       name,
@@ -63,10 +52,6 @@ exports.addProduct = async (req, res) => {
     });
 
     await newProduct.save();
-
-    // Send correct image URL in response
-    newProduct.image = newProduct.image ? `http://localhost:5000/${newProduct.image}` : null;
-
     res.status(201).json(newProduct);
   } catch (error) {
     res.status(500).json({ message: 'Failed to add product', error: error.message });
@@ -86,11 +71,10 @@ exports.updateProduct = async (req, res) => {
     }
 
     if (req.file) {
-      // Delete old image
       if (product.image && fs.existsSync(product.image)) {
         fs.unlinkSync(product.image);
       }
-      product.image = req.file.path.replace(/\\/g, '/');
+      product.image = req.file.path;
     }
 
     Object.keys(req.body).forEach((key) => {
@@ -98,10 +82,6 @@ exports.updateProduct = async (req, res) => {
     });
 
     await product.save();
-
-    // Send correct image URL in response
-    product.image = product.image ? `http://localhost:5000/${product.image}` : null;
-
     res.status(200).json({ message: 'Product updated successfully', product });
   } catch (error) {
     res.status(500).json({ message: 'Failed to update product', error: error.message });
@@ -119,7 +99,6 @@ exports.deleteProduct = async (req, res) => {
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete product', error: error.message });

@@ -2,6 +2,8 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const multer = require('multer');
+
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const adminRoutes = require('./routes/adminRoutes'); // ✅ Import Admin Routes
@@ -17,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Middleware
 app.use(express.json()); // For parsing JSON bodies
-app.use('/uploads', express.static('uploads'));
+const upload = multer({ dest: 'uploads/' });
 
 
 // CORS Configuration
