@@ -26,8 +26,6 @@ exports.getProductById = async (req, res) => {
 
 // Add a new product (Admins only)
 exports.addProduct = async (req, res) => {
-  console.log(req.body); // Check if data is received
-  console.log(req.file); // Check if file is uploaded
   try {
     if (!req.user || !req.user.isAdmin) {
       return res.status(403).json({ message: 'Access denied. Admins only.' });
@@ -95,11 +93,21 @@ exports.deleteProduct = async (req, res) => {
       return res.status(403).json({ message: 'Access denied. Admins only.' });
     }
 
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
-    if (!deletedProduct) {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    res.status(200).json({ message: 'Product deleted successfully' });
+
+    // ✅ Delete the image file from the uploads folder
+    if (product.image && fs.existsSync(product.image)) {
+      fs.unlinkSync(product.image);
+      console.log(`🗑️ Deleted image: ${product.image}`);
+    }
+
+    // ✅ Delete the product from the database
+    await Product.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ message: 'Product and image deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete product', error: error.message });
   }

@@ -2,13 +2,13 @@ const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const multer = require('multer');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
-const adminRoutes = require('./routes/adminRoutes'); // ✅ Import Admin Routes
+const adminRoutes = require('./routes/adminRoutes'); 
+const orderRoutes = require('./routes/orderRoutes'); // ✅ Import Order Routes
 
-dotenv.config(); // Load environment variables
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -18,28 +18,28 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((error) => console.error('MongoDB Connection Error:', error));
 
 // Middleware
-app.use(express.json()); // For parsing JSON bodies
-const upload = multer({ dest: 'uploads/' });
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // CORS Configuration
 app.use(cors({
-  origin: ['http://localhost:3000'],  // ✅ Allow frontend only
+  origin: ['http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,  // Allow credentials (cookies, headers)
+  credentials: true,
 }));
 
-// Debugging Middleware for Incoming Requests
+// Debugging Middleware
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Body:`, req.body);
   next();
 });
 
-// Routes
-app.use('/api/auth', authRoutes);       // Authentication Routes
-app.use('/api/products', productRoutes); // Product Routes
-app.use('/api/admin', adminRoutes);     // ✅ Admin Routes
+// ✅ Register Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/orders', orderRoutes); // ✅ Added missing orders route
 
 // Sample Route
 app.get('/', (req, res) => {
