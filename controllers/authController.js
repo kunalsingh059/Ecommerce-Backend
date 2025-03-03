@@ -1,19 +1,3 @@
-// const registerUser = async (req, res) => {
-//   try {
-//     const { name, email, password, confirmPassword } = req.body;
-    
-//     if (password !== confirmPassword) {
-//       return res.status(400).json({ message: "Passwords do not match" });
-//     }
-
-//     const newUser = await User.create({ name, email, password });
-//     res.status(201).json({ message: "User registered successfully", user: newUser });
-
-//   } catch (error) {
-//     res.status(500).json({ message: "Error registering user", error: error.message });
-//   }
-// };
-
 require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -105,7 +89,7 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetTokenExpiry;
 
-    const resetLink = `http://localhost:5000/api/auth/reset-password/${resetToken}`;
+    const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
 
     try {
       await transporter.sendMail({
