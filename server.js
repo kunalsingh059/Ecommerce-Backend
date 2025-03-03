@@ -65,6 +65,8 @@ const productRoutes = require('./routes/productRoutes');
 const adminRoutes = require('./routes/adminRoutes'); 
 const orderRoutes = require('./routes/orderRoutes'); 
 const contactRoutes = require("./routes/contactRoutes");
+const billingRoutes = require("./routes/billingRoutes");
+
 
 dotenv.config();
 
@@ -111,6 +113,8 @@ app.use('/api/products', productRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/orders', orderRoutes);
 app.use("/api", contactRoutes);
+app.use("/api", billingRoutes);
+
 
 // Sample Route
 app.get('/', (req, res) => {
