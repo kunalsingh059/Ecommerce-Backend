@@ -89,7 +89,7 @@ const forgotPassword = async (req, res) => {
     user.resetPasswordToken = resetToken;
     user.resetPasswordExpires = resetTokenExpiry;
 
-    const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
 
     try {
       await transporter.sendMail({
