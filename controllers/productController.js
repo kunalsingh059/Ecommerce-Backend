@@ -98,13 +98,13 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // ✅ Delete the image file from the uploads folder
+    // Delete the image file from the uploads folder
     if (product.image && fs.existsSync(product.image)) {
       fs.unlinkSync(product.image);
       console.log(`🗑️ Deleted image: ${product.image}`);
     }
 
-    // ✅ Delete the product from the database
+    // Delete the product from the database
     await Product.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: 'Product and image deleted successfully' });

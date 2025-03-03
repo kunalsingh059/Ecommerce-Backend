@@ -1,6 +1,6 @@
 const Order = require('../models/order');
 
-// ✅ Create a new order
+// Create a new order
 exports.createOrder = async (req, res) => {
   try {
     const { products, totalAmount, paymentStatus, address } = req.body;
@@ -24,7 +24,7 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// ✅ Get all orders (Admin only)
+// Get all orders (Admin only)
 exports.getAllOrders = async (req, res) => {
   try {
     if (!req.user.isAdmin) {
@@ -37,7 +37,7 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-// ✅ Get a single order
+// Get a single order
 exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id);
@@ -50,7 +50,7 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-// ✅ Update order status (Admin only)
+// Update order status (Admin only)
 exports.updateOrderStatus = async (req, res) => {
   try {
     if (!req.user.isAdmin) {
@@ -68,7 +68,7 @@ exports.updateOrderStatus = async (req, res) => {
   }
 };
 
-// ✅ Delete order (Admin only)
+// Delete order (Admin only)
 exports.deleteOrder = async (req, res) => {
   try {
     if (!req.user.isAdmin) {

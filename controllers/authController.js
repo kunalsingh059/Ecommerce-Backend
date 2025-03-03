@@ -270,7 +270,7 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
 
-    user.password = newPassword; // ✅ No need to hash, `User.js` handles it
+    user.password = newPassword; // No need to hash, `User.js` handles it
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     user.passwordChangedAt = Date.now();

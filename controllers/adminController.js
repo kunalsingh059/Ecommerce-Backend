@@ -1,6 +1,6 @@
 const User = require("../models/User");
 
-// ✅ Get all users (Admin only)
+// Get all users (Admin only)
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({}, "-password"); // Exclude passwords
@@ -10,7 +10,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// ✅ Get a specific user (Admin only)
+// Get a specific user (Admin only)
 const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id, "-password"); // Exclude password
@@ -22,7 +22,7 @@ const getUserById = async (req, res) => {
   }
 };
 
-// ✅ Make a user an admin (Admin only)
+// Make a user an admin (Admin only)
 const makeUserAdmin = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { isAdmin: true }, { new: true });
@@ -34,7 +34,7 @@ const makeUserAdmin = async (req, res) => {
   }
 };
 
-// ✅ Remove admin privileges (Admin only)
+// Remove admin privileges (Admin only)
 const removeAdminPrivileges = async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(req.params.id, { isAdmin: false }, { new: true });
@@ -46,7 +46,7 @@ const removeAdminPrivileges = async (req, res) => {
   }
 };
 
-// ✅ Delete a user (Admin only)
+// Delete a user (Admin only)
 const deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);

@@ -77,19 +77,19 @@ const {
 
 const router = express.Router();
 
-// ✅ Get all users (Admin only)
+// Get all users (Admin only)
 router.get("/users", authenticateJWT, isAdmin, getAllUsers);
 
-// ✅ Get a specific user (Admin only)
+// Get a specific user (Admin only)
 router.get("/users/:id", authenticateJWT, isAdmin, getUserById);
 
-// ✅ Make a user an admin (Admin only)
+// Make a user an admin (Admin only)
 router.put("/make-admin/:id", authenticateJWT, isAdmin, makeUserAdmin);
 
-// ✅ Remove admin privileges (Admin only)
+// Remove admin privileges (Admin only)
 router.put("/remove-admin/:id", authenticateJWT, isAdmin, removeAdminPrivileges);
 
-// ✅ Delete a user (Admin only)
+// Delete a user (Admin only)
 router.delete("/users/:id", authenticateJWT, isAdmin, deleteUser);
 
 module.exports = router;

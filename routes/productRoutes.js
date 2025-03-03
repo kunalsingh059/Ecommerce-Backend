@@ -8,7 +8,7 @@ const {
 } = require('../controllers/productController');
 const multer = require('multer');
 const path = require('path');
-const { authenticateJWT, isAdmin } = require('../middlewares/authMiddleware'); // ✅ Fix: Destructure correctly
+const { authenticateJWT, isAdmin } = require('../middlewares/authMiddleware'); // Fix: Destructure correctly
 
 const router = express.Router();
 
@@ -38,7 +38,7 @@ const upload = multer({
 router.get('/', getAllProducts); // Get all products
 router.get('/:id', getProductById); // Get a product by ID
 
-// Admin-only routes (✅ Use isAdmin middleware from authMiddleware.js)
+// Admin-only routes (Use isAdmin middleware from authMiddleware.js)
 router.post('/', authenticateJWT, isAdmin, upload.single('image'), addProduct); // Add a new product
 router.put('/:id', authenticateJWT, isAdmin, upload.single('image'), updateProduct); // Update a product
 router.delete('/:id', authenticateJWT, isAdmin, deleteProduct); // Delete a product
