@@ -71,7 +71,7 @@ const app = express();
 const PORT = 5000;
 
 // ✅ MongoDB Connection with Error Handling
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect("mongodb+srv://kunalsinghchouhan07:Kunalsinghchouhan059@ecommerce.zlfk2.mongodb.net/Backend")
   .then(() => console.log('✅ MongoDB Connected'))
   .catch((error) => {
     console.error('❌ MongoDB Connection Error:', error);
