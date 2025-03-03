@@ -68,7 +68,7 @@ const orderRoutes = require('./routes/orderRoutes'); // ✅ Import Order Routes
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 // ✅ MongoDB Connection with Error Handling
 mongoose.connect(process.env.MONGO_URI)
